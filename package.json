@@ -1,5 +1,5 @@
 {
-  "name": "uploader",
+  "name": "apigee-uploader",
   "version": "0.0.1",
   "description": "Upload data to Apigee Storage",
   "main": "index.js",
