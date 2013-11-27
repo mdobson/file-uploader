@@ -1,0 +1,33 @@
+{
+  "name": "uploader",
+  "version": "0.0.1",
+  "description": "Upload data to Apigee Storage",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mdobson/uploader"
+  },
+  "keywords": [
+    "apigee",
+    "files",
+    "data",
+    "uploader"
+  ],
+  "author": "Matthew Dobson <mdobson4@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdobson/uploader/issues"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1"
+  },
+  "homepage": "https://github.com/mdobson/uploader",
+  "dependencies": {
+    "usergrid": "~0.10.6",
+    "commander": "~2.1.0",
+    "request": "~2.27.0"
+  }
+}
