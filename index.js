@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var ug = require("usergrid"),
     cmdr = require("commander"),
     path = require("path"),

@@ -24,6 +24,9 @@
   "devDependencies": {
     "mocha": "~1.8.1"
   },
+  "bin":{
+    "upldr":"index.js"
+  },
   "homepage": "https://github.com/mdobson/uploader",
   "dependencies": {
     "usergrid": "~0.10.6",
