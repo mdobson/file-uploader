@@ -128,7 +128,7 @@ if(data_path) {
     prompt.get({ 
       properties: {
         type: {
-          description: "Enter a type for uploading data"
+          description: "Enter a type for uploading data",
           required:true
         }
       }
@@ -138,18 +138,19 @@ if(data_path) {
       } else {
         var data = require(data_path);
         var request_params = {
-          endpoint : "/"+result.type,
+          endpoint : result.type,
           method: "POST",
           body: data
-        }
+        };
         client.request(request_params, function(error, response) {
           if(error) {
-             throw error
+             throw error;
           } else {
             console.log("Upload success!");
           }
         });
       }
+    });
 
   } else {
     throw new Error("Client improperly configured");
