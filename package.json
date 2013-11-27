@@ -28,6 +28,7 @@
   "dependencies": {
     "usergrid": "~0.10.6",
     "commander": "~2.1.0",
-    "request": "~2.27.0"
+    "request": "~2.27.0",
+    "prompt": "~0.2.11"
   }
 }

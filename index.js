@@ -2,7 +2,8 @@ var ug = require("usergrid"),
     cmdr = require("commander"),
     path = require("path"),
     fs = require("fs"),
-    request = require("request");
+    request = require("request"),
+    prompt = require("prompt");
 
 cmdr
   .version("0.0.1")
@@ -13,7 +14,6 @@ cmdr
   .option("-s --secret [secret]", "Your client secret")
   .option("-f --file [filepath]", "Path to a file for uploading")
   .option("-d --data [datapath]", "Path to json file for uploading")
-  .option("-c --create [app]", "Create an app alias. This is to save settings")
   .parse(process.argv);
 
 //Parsing out arguments
@@ -69,35 +69,92 @@ if (file_path) {
   if(client) {
     fs.readFile(file_path, {encoding:"binary"}, function(err, file_data) {
       if(err) throw err;
-      var basename = path.basename(file_path);
-      var entity = {
-        "type":"assets",
-        "name":basename,
-        "owner":"b276e86a-52f1-11e3-9f5e-132cc23a907b",
-        "path":"/vid/"+basename
-      }
-      client.createEntity(entity, function(error, data) {
+      prompt.message = "";
+      prompt.start();
+      console.log("Assets require an owner. Sign into the app".cyan);
+      prompt.get({
+        properties: { 
+          username:{
+            description: "Enter a username".cyan, 
+            required:true
+          },
+          password: {
+            description:"Enter a password".cyan,
+            hidden:true
+          }
+        }
+      }, 
+        function(error, result) {
         if(error) {
-          throw error
+          throw error;
         } else {
-          var uuid = data.get("uuid");
-          var assetUrl = client.buildAssetURL(uuid);
-          request.post({"headers":{"Content-Type":"application/octet-stream"}, "url":assetUrl, "body":file_data.toString()}, function(e, r, body) {
-            if(e) {
-              throw e;
-            } else {
-              console.log("Upload Success");
+          client.login(result.username, result.password, function(error, data, user) {
+
+            var basename = path.basename(file_path);
+            var entity = {
+              "type":"assets",
+              "name":basename,
+              "owner":user.get("uuid"),
+              "path":"/vid/"+basename
             }
+            client.createEntity(entity, function(error, data) {
+              if(error) {
+                throw error
+              } else {
+                var uuid = data.get("uuid");
+                var assetUrl = client.buildAssetURL(uuid);
+                request.post({"headers":{"Content-Type":"application/octet-stream"}, "url":assetUrl, "body":file_data.toString()}, function(e, r, body) {
+                  if(e) {
+                    throw e;
+                  } else {
+                    console.log("Upload Success");
+                  }
+                });
+              }
+            });
           });
         }
+      });
     });
-  });
   } else {
     throw new Error("Client improperly configured");
   }
 }
 
+if(data_path) {
+  if(client) {
+    prompt.message = "";
+    prompt.start();
+    prompt.get({ 
+      properties: {
+        type: {
+          description: "Enter a type for uploading data"
+          required:true
+        }
+      }
+    }, function(error, result) {
+      if(error) {
+        throw error;
+      } else {
+        var data = require(data_path);
+        var request_params = {
+          endpoint : "/"+result.type,
+          method: "POST",
+          body: data
+        }
+        client.request(request_params, function(error, response) {
+          if(error) {
+             throw error
+          } else {
+            console.log("Upload success!");
+          }
+        });
+      }
 
+  } else {
+    throw new Error("Client improperly configured");
+  }
+}
 
 
 
